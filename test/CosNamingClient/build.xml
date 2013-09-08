@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ MORFEO Project
+ http://www.morfeo-project.org
+
+ Component: TIDNamingJ
+ Programming Language: Java
+
+ File: $Source: $
+ Version: $Revision: 1.4 $
+ Date: $Date: 2006/10/13 10:35:18 $
+ Last modified by: $Author: iredondo $
+
+ (C) Copyright 2004 Telefonica Investigacion y Desarrollo
+     S.A.Unipersonal (Telefonica I+D)
+
+ Info about members and contributors of the MORFEO project
+ is available at:
+
+   http://www.morfeo-project.org/TIDNamingJ/CREDITS
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+ If you want to use this software an plan to distribute a
+ proprietary application in any way, and you are not licensing and
+ distributing your source code under GPL, you probably need to
+ purchase a commercial license of the product.  More info about
+ licensing options is available at:
+
+   http://www.morfeo-project.org/TIDNamigJ/Licensing
+   
+-->
+
+<project name="TIDNamingClient" default="all" basedir=".">
+  
+  <property name="tidnamingj.TIDNamingClient.debug" value="false"/>
+  <property name="tidorbj.home" location="../../../TIDorbJ"/>
+  <property name="tididlc.home" location="../../../TIDIdlc"/>
+  <property name="tidnamingj.home" location="../../../TIDNamingJ"/>
+  <import file="${tididlc.home}/build/properties.xml"/>
+  <import file="${tididlc.home}/build/tasks.xml"/>
+  
+
+  <target name="debug">
+    <property name="tidorbj.TIDNamingClient.debug" value="true"/>
+    <antcall target="all" inheritall="true" inheritrefs="true">
+      <param name="tidorbj.TIDNamingClient.debug" value="true"/>
+    </antcall>
+  </target>
+
+  <target name="compile">
+    <sequential>
+    <javac debug="${tidorbj.TIDNamingClient.debug}" 
+           srcdir="." 
+           destdir="."
+           includes="*.java">
+<!--       <exclude name="ThePushSupplierServer.java" /> -->
+<!--       <exclude name="ThePushConsumerServer.java" /> -->
+<!--       <exclude name="TheTransformator.java" /> -->
+      <classpath>
+        <pathelement path="."/>
+        <pathelement location="${tidorbj.home}/dist/lib/tidorbj.jar"/>
+        <pathelement location="${tidnamingj.home}/dist/lib/TIDNaming.jar"/>
+      </classpath>
+    </javac>
+
+    <jar basedir ="./es/tid/corba/CosNamingClient" 
+         destfile="./CosNamingClient.jar"
+         />
+
+    </sequential>
+  </target>
+  
+  <target name="TestCosNaming" depends="compile">
+    <java classname="es.tid.corba.CosNamingClient.TestCosNaming">
+      <jvmarg value="-Dorg.omg.CORBA.ORBClass=es.tid.TIDorbj.core.TIDORB"/>
+      <jvmarg value="-Dorg.omg.CORBA.ORBSingletonClass=es.tid.TIDorbj.core.SingletonORB"/>
+      <classpath>
+        <pathelement path="."/>
+        <pathelement location="CosNamingClient.jar"/>
+        <pathelement location="${tidorbj.home}/dist/lib/tidorbj.jar"/>
+        <pathelement location="${tidnamingj.home}/dist/lib/TIDNaming.jar"/>
+      </classpath>
+    </java>	
+  </target>
+  
+  <target name="all" depends="compile">
+  </target>
+  
+  <target name="clean">	
+    <delete dir="${basedir}/es"/>
+    <delete>
+      <fileset dir="." includes="**/*.class"/>
+      <fileset dir="." includes="**/*.jar"/>
+      <fileset dir="." includes="**/*.jar"/>
+    </delete>
+    <!-- 
+         <ant target="clean" dir="source" inheritrefs="true"
+         inheritall="true"/>
+    -->
+  </target>
+  
+        
+
+</project>

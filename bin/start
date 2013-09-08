@@ -1,0 +1,92 @@
+#!/bin/sh
+
+set +u
+
+if [ -z "$JAVA_HOME" ]; then
+	echo "Environment variable JAVA_HOME must be set"
+	exit 1
+fi
+
+if [ -z "$TIDORBJ_HOME" ]; then
+	echo "Environment variable TIDORBJ_HOME must be set"
+	exit 1	
+fi
+
+if [ -z "$TIDNAMINGJ_HOME" ]; then
+	echo "Environment variable TIDNAMINGJ_HOME must be set"
+	exit 1	
+fi
+
+JVM=$JDK_HOME/bin/java
+
+START_CLASSPATH=$TIDORBJ_HOME/lib/tidorbj.jar:$TIDNAMINGJ_HOME/lib/TIDNaming.jar
+
+# TIDNamingJ options (default values):
+#
+#   es.tid.corba.TIDNaming.spaces_file TID  (string) 
+#   es.tid.corba.TIDNaming.use_space_manager true  { true | false }
+#   es.tid.corba.TIDNaming.space_threads 10 
+#   es.tid.corba.TIDNaming.max_space_threads 25  [1, 99]
+#   es.tid.corba.TIDNaming.space_connections 5   [1, 99 ]
+#   es.tid.corba.TIDNaming.use_trace false { true | false }
+#   es.tid.corba.TIDNaming.trace_level 1 [ 0, , 4 }]
+#   es.tid.corba.TIDNaming.trace_file tidnaming.log  (string)
+
+
+
+
+
+echo "Starting TIDNamingJ service..."
+$JVM -Xbootclasspath/p:$START_CLASSPATH \
+    -classpath $START_CLASSPATH:. \
+    -Dorg.omg.CORBA.ORBClass=es.tid.TIDorbj.core.TIDORB \
+    -Dorg.omg.CORBA.ORBSingletonClass=es.tid.TIDorbj.core.SingletonORB \
+    es.tid.corba.TIDNaming.Server \
+    es.tid.TIDorbj.trace.file tidnaming_orb.log \
+    es.tid.TIDorbj.trace.level 0 \
+    es.tid.TIDorbj.iiop.max_connections 500 \
+    es.tid.TIDorbj.iiop.orb_port 2809 \
+    es.tid.corba.TIDNaming.spaces_file TID \
+    es.tid.corba.TIDNaming.use_space_manager false \
+    es.tid.corba.TIDNaming.space_threads 5 \
+    es.tid.corba.TIDNaming.max_space_threads 10 \
+    es.tid.corba.TIDNaming.space_connections 5 \
+    es.tid.corba.TIDNaming.use_trace false \
+    es.tid.corba.TIDNaming.trace_level 0 \
+    es.tid.corba.TIDNaming.trace_file tidnaming.log \
+    > /tmp/tidnaming_agent.ior &
+naming_daemon_pid=$!
+sleep 2
+
+
+
+
+echo "Obtaining a root_context..."
+$JVM -Xbootclasspath/p:$START_CLASSPATH \
+    -classpath $START_CLASSPATH:. \
+    -Dorg.omg.CORBA.ORBClass=es.tid.TIDorbj.core.TIDORB \
+    -Dorg.omg.CORBA.ORBSingletonClass=es.tid.TIDorbj.core.SingletonORB \
+    es.tid.corba.TIDNamingAdminClient.NewNullDBSpace TID \
+    < /tmp/tidnaming_agent.ior
+sleep 2
+
+$JVM -Xbootclasspath/p:$START_CLASSPATH \
+    -classpath $START_CLASSPATH:. \
+    -Dorg.omg.CORBA.ORBClass=es.tid.TIDorbj.core.TIDORB \
+    -Dorg.omg.CORBA.ORBSingletonClass=es.tid.TIDorbj.core.SingletonORB \
+    es.tid.corba.TIDNamingAdminClient.InitService \
+    < /tmp/tidnaming_agent.ior
+sleep 2
+
+
+echo "Press any key to Shutdown Naming Service"
+read n
+sleep 1
+$JVM -Xbootclasspath/p:$START_CLASSPATH \
+    -classpath $START_CLASSPATH:. \
+    -Dorg.omg.CORBA.ORBClass=es.tid.TIDorbj.core.TIDORB \
+    -Dorg.omg.CORBA.ORBSingletonClass=es.tid.TIDorbj.core.SingletonORB \
+    es.tid.corba.TIDNamingAdminClient.ShutdownService \
+    < /tmp/tidnaming_agent.ior
+
+

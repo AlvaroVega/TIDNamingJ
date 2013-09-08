@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ MORFEO Project
+ http://www.morfeo-project.org
+
+ Component: TIDNamingJ
+ Programming Language: Java
+
+ File: $Source$
+ Version: $Revision: 1 $
+ Date: $Date: 2009-03-20 11:28:08 +0100 (Fri, 20 Mar 2009) $
+ Last modified by: $Author: avega $
+
+ (C) Copyright 2009 Telefonica Investigacion y Desarrollo
+     S.A.Unipersonal (Telefonica I+D)
+
+ Info about members and contributors of the MORFEO project
+ is available at:
+
+   http://www.morfeo-project.org/TIDNamingJ/CREDITS
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+ If you want to use this software an plan to distribute a
+ proprietary application in any way, and you are not licensing and
+ distributing your source code under GPL, you probably need to
+ purchase a commercial license of the product.  More info about
+ licensing options is available at:
+
+   http://www.morfeo-project.org/TIDNamingJ/Licensing
+   
+-->
+
+<project name="TIDNaming" basedir="." default="all">
+	
+  <!--============
+      Dependencies
+      ============-->
+<!--   <property name="omg.naming.idl.dir"  	 location="../OMG/Naming/source/idl" /> -->
+<!--   <property name="tidutil.java.output.lib" location="../TIDUtil/lib" /> -->
+	
+	
+  <!--==========================
+      Miscelaneous configuration
+      ==========================-->
+  <property name="tidnaming.debug"    value="true"  />
+  <property name="tidnaming.encoding" value="utf-8" /> 
+<!--   <property name="tidnotifj.encoding" value="iso8859-15" /> -->
+  
+
+
+
+
+  <!--==========================
+      Ant Contrib configuration
+      ==========================-->
+<!--   <property name="ant.contrib.home" location="../dependencies/misc/ant-contrib-1.0b2" /> -->
+  
+<!--   <taskdef resource="net/sf/antcontrib/antlib.xml"> -->
+<!--     <classpath> -->
+<!--       <fileset dir="${ant.contrib.home}" > -->
+<!--         <include name="**/*.jar"/> -->
+<!--       </fileset> -->
+<!--     </classpath> -->
+<!--   </taskdef> -->
+
+
+  <!--==========================
+      Oracle JDBC configuration
+      ==========================-->
+  <property name="jdbc.home" location="../../shared/OracleJDBC/9.2.0.8" />
+  <path id="jdbc.class.path">
+    <fileset dir="${jdbc.home}/lib">
+      <include name="**/*.jar"/>
+      <include name="**/*.zip"/>
+    </fileset>
+  </path>
+  <property name="jdbc.class.path" refid="jdbc.class.path"/>
+  
+  
+
+  <!--Configure TIDIdlc path -->
+  <property name="tidorbj.home" location="../TIDorbJ"/>
+  <property name="tididlc.home" location="../TIDIdlc"/>
+  <import file="${tididlc.home}/build/properties.xml"/>
+  <import file="${tididlc.home}/build/tasks.xml"/>
+
+
+
+  <!--==============================
+      TIDorbj compiler configuration (should be imported from an external file)
+      ==============================-->
+<!--   <property name="tidorbj.home" location="../dependencies/TIDorbJ"/> -->
+<!--   <path id="tidorbj.class.path"> -->
+<!--     <fileset dir="${tidorbj.home}/lib"> -->
+<!--       <include name="**/*.jar"/> -->
+<!--     </fileset> -->
+<!--   </path> -->
+<!--   <property name="tidorbj.class.path" refid="tidorbj.class.path"/> -->
+  
+  
+  <!--==============================
+      TIDIdl compiler configuration (should be imported from an external file)
+      ==============================-->
+<!--   <property name="tididlc.home" location="../dependencies/TIDIdlc"/> -->
+<!--   <path id="tididlc.class.path"> -->
+<!--     <fileset dir="${tididlc.home}/lib"> -->
+<!--       <include name="**/*.jar"/> -->
+<!--     </fileset> -->
+<!--   </path> -->
+<!--   <property name="tididlc.class.path" refid="tididlc.class.path"/> -->
+<!--   <taskdef name="idl2java" classname="es.tid.TIDIdlc.ant.Idl2JavaTask"> -->
+<!--     <classpath> -->
+<!--       <path refid="tididlc.class.path"/> -->
+<!--     </classpath> -->
+<!--   </taskdef> -->
+  
+  
+  <!--==============================
+      TIDutil configuration (should be imported from an external file)
+      ==============================-->
+<!--   <property name="tidutil.home" location="../TIDUtil"/> -->
+<!--   <path id="tidutil.class.path"> -->
+<!--     <fileset dir="${tidutil.home}/lib"> -->
+<!--       <include name="**/*.jar"/> -->
+<!--     </fileset> -->
+<!--   </path> -->
+<!--   <property name="tidutil.class.path" refid="tidutil.class.path"/>	 -->
+  
+
+  <!--========================
+      idl java code generation 
+      ========================-->
+  <property name="omg.naming.idl.dir"  	    location="OMG/Naming"        />
+  <property name="tidnaming.idl.dir"        location="idl"      />
+  <property name="tidnaming.idl.file"       value="TIDNamingAdmin.idl" />
+
+  <property name="tidnaming.idl.java.dir"  	  location="idl/.java"    />	
+  <property name="tidnaming.idl.java.output.dir"  location="idl/.classes" />	
+  <property name="tidnaming.idl.java.output.lib"  location="lib" 			      />	
+  <property name="tidnaming.idl.java.output.file" value="TIDNamingIdl.jar"      />	
+  <property name="tidnaming.idl.lib"              value="${tidnaming.idl.java.output.lib}/${tidnaming.idl.java.output.file}" />
+  
+  <!--====================
+      java code generation 
+      ====================-->
+  <property name="tidnaming.java.dir"		location="source"     />
+  <property name="tidnaming.java.output.dir"	location=".classes"   />
+  <property name="tidnaming.java.output.lib"	location="lib"        />
+  <property name="tidnaming.java.output.file"	value="TIDNaming.jar" />
+  <property name="tidnaming.bin.dir"            value="bin"  />
+  <property name="tidnaming.install.dir"        value="dist" />
+  <property name="tidnaming.lib"                value="${tidnaming.java.output.lib}/${tidnaming.java.output.file}" />
+  <property name="tidnaming.OMG.dir"            value="OMG"  />
+
+  
+   
+  <!--=============== 
+      Idl compilation
+      ===============-->
+  
+  <target name="idl" > <!-- depends="init"> -->
+    
+    <sequential>
+      
+      <idl2java srcdir ="${tidnaming.idl.dir}" 
+                source ="${tidnaming.idl.file}" 
+                destdir="${tidnaming.idl.java.dir}" 
+                package="es.tid.corba" >
+        <include dir="${omg.naming.idl.dir}" />
+        <packageto module="CosNaming" package="org.omg"  />
+      </idl2java>
+      
+      <javac srcdir="${tidnaming.idl.java.dir}"
+             destdir="${tidnaming.idl.java.output.dir}" 
+             debug="${tidnaming.debug}" encoding="${tidnaming.encoding}" >
+        <classpath>
+<!--           <path refid="tidorbj.class.path" /> -->
+          <pathelement location="${tidorbj.home}/dist/lib/tidorbj.jar"/>
+        </classpath>
+      </javac>
+        
+      <jar basedir ="${tidnaming.idl.java.output.dir}" 
+           destfile="${tidnaming.idl.java.output.lib}/${tidnaming.idl.java.output.file}"
+           />
+      
+    </sequential>
+  </target>
+  
+
+
+
+  <!--=========================
+      dist java code generation 
+      =========================-->
+  <property name="tidnaming.dist.java.output.file"  value="TIDNaming.jar"  />
+  <property name="tidnaming.dist.lib"               value="${tidnaming.java.output.lib}/${tidnaming.dist.java.output.file}" />
+
+
+
+  <target name="all" depends="init">
+    
+    
+    <antcall target="idl"  inheritrefs="true" inheritall="true"/>
+
+    <!--
+        <outofdate>
+        <sourcefiles>
+        <fileset dir="${omg.event.idl.dir}">
+        <include name="*.idl" />
+        </fileset>
+        </sourcefiles>
+
+        <targetfiles>
+        <fileset dir="${omg.event.source.java}" >
+        <include name="**/*.java"/>
+        </fileset>
+        </targetfiles>
+
+        <sequential>
+    -->
+
+
+
+    <!--================
+        java compilation
+        ================-->
+    <javac srcdir="${tidnaming.java.dir}"
+           destdir="${tidnaming.java.output.dir}" 
+           debug="${tidnaming.debug}" encoding="${tidnaming.encoding}" 
+           >
+      <classpath>
+        <path refid="jdbc.class.path"    />
+<!--         <path refid="tidutil.class.path" /> -->
+        <pathelement location="${tidorbj.home}/dist/lib/tidorbj.jar"/>
+        <pathelement location="${tidnaming.idl.java.output.lib}/${tidnaming.idl.java.output.file}" />
+      </classpath>
+    </javac>
+
+    <jar basedir ="${tidnaming.java.output.dir}" 
+         destfile="${tidnaming.java.output.lib}/${tidnaming.java.output.file}"
+         />
+
+    <!--
+        </sequential>
+        </outofdate>
+    -->
+  </target>
+
+
+
+  <!--=======
+      install
+      =======-->
+  <target name="install" depends="all">
+    <delete dir="${tidnaming.install.dir}"/>
+    <mkdir dir="${tidnaming.install.dir}"/>
+    <mkdir dir="${tidnaming.install.dir}/bin"/>
+    <mkdir dir="${tidnaming.install.dir}/lib"/>
+    <mkdir dir="${tidnaming.install.dir}/OMG"/>
+<!--     <mkdir dir="${tidnaming.install.dir}/lib/shared"/> -->
+    <copy todir="${tidnaming.install.dir}/bin">
+      <fileset dir="${tidnaming.bin.dir}">
+      </fileset>
+    </copy>
+    <copy todir="${tidnaming.install.dir}/OMG">
+      <fileset dir="${tidnaming.OMG.dir}">
+      </fileset>
+    </copy>
+    <chmod dir="${tidnaming.install.dir}/bin" perm="a+x" includes="*"/>
+<!--     <copy file="${tidnaming.lib}" todir="${tidnaming.install.dir}/lib"/> -->
+<!--     <copy file="${tidnaming.idl.lib}" todir="${tidnaming.install.dir}/lib"/> -->
+<!--     <jar  destfile="${tidnaming.install.dir}/lib/start.jar"  -->
+<!--           manifest="source/META-INF/start/MANIFEST.MF"/> -->
+<!--     <jar  destfile="${tidnaming.install.dir}/lib/Shutdown.jar"  -->
+<!--           manifest="source/META-INF/shutdown/MANIFEST.MF"/> -->
+<!--     <jar  destfile="${tidnaming.install.dir}/lib/stop.jar"  -->
+<!--           manifest="source/META-INF/stop/MANIFEST.MF"/> -->
+<!--     <copy file="${tidorbj.class.path}" todir="${tidnaming.install.dir}/lib/shared"/> -->
+    <copy file="COPYING" todir="${tidnaming.install.dir}"/>
+    <copy file="ChangeLog" todir="${tidnaming.install.dir}"/>
+    <copy file="VERSION" todir="${tidnaming.install.dir}"/>
+    <copy file="BUGS" todir="${tidnaming.install.dir}"/>
+    <copy file="INSTALL" todir="${tidnaming.install.dir}"/>
+    <copy file="AUTHORS" todir="${tidnaming.install.dir}"/>
+    <copy file="BUILT" todir="${tidnaming.install.dir}"/>
+    <copy file="OMG_SPEC" todir="${tidnaming.install.dir}"/>
+
+    <antcall target="lib"  inheritrefs="true" inheritall="true"/>
+    <copy file="${tidnaming.dist.lib}" todir="${tidnaming.install.dir}/lib"/>
+<!--     <copy file="${tidnaming.tools.lib}" todir="${tidnaming.install.dir}/lib"/> -->
+  </target>
+
+
+
+  <!--===================
+      library distribuion
+      ===================-->
+  <target name="lib" depends="all">
+    <sequential>
+      <mkdir dir=".class"/>	
+      <unjar  dest=".class" src="${tidnaming.idl.java.output.lib}/${tidnaming.idl.java.output.file}"/>
+      <unjar  dest=".class" src="${tidnaming.java.output.lib}/${tidnaming.java.output.file}"/>
+      <jar  basedir=".class" destfile="${tidnaming.dist.lib}" />
+      <delete dir=".class"/>
+    </sequential>
+  </target>
+
+
+
+  <target name="debug">
+    <property name="tidnaming.debug" value="true"/>
+    <antcall target="all" inheritall="true" inheritrefs="true">
+      <param name="tidnaming.debug" value="true"/>
+    </antcall>
+  </target>
+
+
+
+  <target name="init" >
+    <echo message="Creating required directories" />
+    
+    <mkdir dir="${tidnaming.idl.java.dir}"        />	
+    <mkdir dir="${tidnaming.idl.java.output.dir}" />	
+    <mkdir dir="${tidnaming.idl.java.output.lib}" />	
+    <mkdir dir="${tidnaming.java.output.dir}"     />
+    <mkdir dir="${tidnaming.java.output.lib}"     />
+
+  </target>
+
+
+
+  <target name="clean" >
+    <echo message="Removing output directories"   />
+    
+    <delete dir="${tidnaming.idl.java.dir}"        />	
+    <delete dir="${tidnaming.idl.java.output.dir}" />	
+    <delete dir="${tidnaming.idl.java.output.lib}" />	
+    <delete dir="${tidnaming.java.output.dir}"     />
+    <delete dir="${tidnaming.java.output.lib}"     />
+    <delete dir="${tidnaming.install.dir}"         />
+
+  </target>
+
+</project>

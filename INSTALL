@@ -1,0 +1,194 @@
+============
+INSTALLATION
+============
+
+1. INSTALLATION FROM BINARY DISTRIBUTION
+========================================
+
+
+1.1 Prerequisits
+----------------
+
+For the compilation of TIDNamingJ next software is needed:
+
+    * Sun Java J2SE SDK 1.4 or later. Download
+    * Subversion Client. Download
+    * Apache Ant 1.6 or later. Download
+    * Oracle JDBC driver 9.2.0.8
+    * TIDIdlc
+    * TIDorb Java 
+
+See TIDIdlc Compilation and Installation HOWTO and TIDorbJ Compilation and 
+Installation HOWTO where the installation of all this required software is 
+explained.
+
+Main Linux distributions (Debian, Ubuntu, RedHat, ...) have available 
+installation packages for this components.
+
+Optionally, TIDNamingJ can be compiled with the Eclipse IDE. 
+
+
+1.2 Installation
+----------------
+
+Download the zipped binaries in the applications directory <install_dir>
+and unzip with:
+
+ $ tar xfvz TIDNamingJ_X.Y.Z.tgz 
+or 
+ $ gzip -d TIDNamingJ_X.Y.Z.tgz | tar xfv
+
+
+You can download directly the TIDNamingJ installation binaries from MORFEO Forge
+at: https://forge.morfeo-project.org/frs/?group_id=13
+
+
+1.3 Execution
+-------------
+
+To execute TIDNamingJ scripts in the shell, next environment variables should be
+set.
+
+· For Unix
+  --------
+
+  export JAVA_HOME=<path to jdk>
+  export TIDNOTIFJ_HOME=<install_dir>/TIDNamingJ
+  export PATH=$PATH:$TIDNOTIFJ_HOME/bin/
+  
+  Runs with: 
+
+       $TIDNOTIFJ_HOME/bin/start
+
+· For Windows
+  -----------
+
+  SET JAVA_HOME=<path to jdk>
+  SET TIDNOTIFJ_HOME=<install_dir>\TIDNamingJ
+  SET PATH=%PATH;%TIDNOTIFJ_HOME%\bin
+
+  Runs with: 
+
+       $TIDNOTIFJ_HOME\bin\start.bat
+
+
+
+2. INSTALLATION FROM SOURCE DISTRIBUTION
+========================================
+
+
+2.1 Prerequisits
+----------------
+
+For the compilation of TIDNamingJ next software is needed:
+
+    · Sun Java J2SE SDK 1.4 or later
+    · Subversion Client
+    · Apache Ant 1.6 or later
+    · TIDIdlc
+    · TIDorb Java 
+
+Main Linux distributions (Debian, Ubuntu, RedHat, ...) have available 
+installation packages for this components.
+
+Optionally, TIDNamingJ can be compiled with the Eclipse IDE.
+
+
+· Needed Software Installation under Debian & Ubuntu Linux
+  --------------------------------------------------------
+ 
+  - For Ubuntu Linux:
+
+    $ sudo apt-get install subversion ant sun-java5-jdk
+    <input user's password>
+
+  - For Debian:
+    $ su
+    <input root's password>
+    $ apt-get install subversion ant sun-java5-jdk
+
+  Also, Other versions of Sun's JDK can also be installed from Java at Sun 
+  MicroSystems.
+
+
+· Java Virtual Machine installation from binaries
+  -----------------------------------------------
+
+  Download the installation zipped file from Java at Sun MicroSystems. 
+  You should create a directory at your $HOME directory where the installation
+  will be done:
+
+  $ mkdir $HOME/java
+
+  Unzip the installation binary file (for examle, jdk-1_5_0_07-linux-586.bin):
+
+  $ cd $HOME/java
+  $ chmod +x jdk-1_5_0_07-linux-586.bin
+  $ ./jdk-1_5_0_07-linux-586.bin
+
+  Follow the installation program instructions to install the Java Development
+  Kit.
+
+  Finally, delete the downloaded file:
+
+  $ rm jdk-1_5_0_07-linux-586.bin
+
+
+2.2 TIDNamingJ Compilation
+-----------------------
+
+· Source Code Download
+  --------------------
+
+  First of all, create a work directory where the source code will be   
+  downloaded:
+
+  $ cd <workspace>
+  $ mkdir Morfeo
+  $ cd Morfeo
+
+  Download the sorce code from the TIDNamingJ Project's Subversion repository:
+
+  $ svn checkout https://svn.morfeo-project.org/svn/tidnotifj/trunk/TIDNamingJ
+
+  The Subversion client would ask for accept the server's certificate. In this 
+  case, Accept it.
+
+
+· Compilation with Ant
+  --------------------
+
+  Go to the TIDNamingJ directory where the source code has been downloaded and 
+  compile it with the command:
+
+  $ cd TIDNamingJ
+  $ ant install
+
+  NOTE: Change the PATH if you want to compile TIDNamingJ with other JDK version
+
+  You can check the JDK version configured in the environment with:
+
+  $ java -version
+
+
+2.3 TIDNamingJ Installation
+------------------------
+
+· Installation from compiled code
+  -------------------------------
+
+  Once compiled TIDNamingJ, from the source code directory (TIDNamingJ), copy the 
+  directory dist with the generated binaries of TIDNamingJ to the usual    
+  applications  directory (for example /opt):
+
+  $ cp -r dist <install_dir>/TIDNamingJ_X.Y
+
+  In Linux, update the execution flags of the scripts to launch the compiler:
+
+  chmod +x <install_dir>/TIDNamingJ_X.Y/bin/*
+
+
+2.4 Execution
+-------------
+
+  Idem "1.3 Execution" previous section.

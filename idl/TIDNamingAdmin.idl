@@ -1,0 +1,161 @@
+// ---------------------------------------------------------------------------
+//
+// File: TIDNamingAdmin.idl
+//  
+// Description   : 
+//                 
+// Author/s      : Juan A. Caceres
+// Project       : 
+// Rel           : 01.00
+// Created       : 16/01/2001
+// Revision Date : 
+// Rev. History  : 
+// 
+// Copyright 2001 Telefonica, I+D. Printed in Spain (Europe). All Rights Reserved.
+// The copyright to the software program(s) is property of Telefonica I+D.
+// The program(s) may be used and or copied only with the express written
+// consent of Telefonica I+D or in acordance with the terms and conditions
+// stipulated in the agreement/contract under which the program(s) have
+// been supplied.   
+// ------------------------------------------------------------------------------ 
+
+#include "CosNaming.idl"
+
+#pragma prefix "tid.es"
+
+
+// Administration utilities for TIDNaming
+  
+module TIDNamingAdmin 
+{
+  // Naming space Name
+  typedef string NamingSpaceName;
+
+  // Naming types
+  enum NamingSpaceType {SQL, LDAP, FILE, NULL};
+
+  // SQL Table Name
+  typedef string TableName;
+  // Server Storage User Name
+  typedef string UserName;
+  // Server Storage User password
+  typedef string Password;
+  // Server Storage URL
+  typedef string URL;
+  // Initial sequence for a connnection to a server
+  typedef string InitSequence;
+  
+	
+  // SQL Data Base access data
+  struct SQL_AccessData {
+    UserName user;
+    Password passwd;
+    TableName table;
+    InitSequence connection_init;
+  };	
+
+  // LDAP Access Data
+  struct LDAP_AccessData {
+    URL dir_url;
+  };
+
+  // LDAP Access Data
+  struct FILE_AccessData {
+    URL file_url; 
+  };
+
+  // NULL Access Data
+  struct NULL_AccessData {
+    URL null_url; 
+  };
+
+
+  // Naming Space Server Storage access data
+  union NamingSpaceAccessData switch(NamingSpaceType) {
+  case SQL: SQL_AccessData sql_data;
+  case LDAP: LDAP_AccessData ldap_data;
+  case FILE: FILE_AccessData file_data;			
+  case NULL: NULL_AccessData null_data;			
+  };
+
+  struct NamingSpace {
+    NamingSpaceName name;
+    CosNaming::NamingContext root_context;
+    NamingSpaceAccessData data;
+  };
+  
+  typedef sequence <NamingSpace> NamingSpaceSeq;
+  
+  // Service Status
+  
+  enum ServiceState {cannot_run, can_run, running, shutdowned};
+  
+  struct ServiceStatus {
+    ServiceState state;
+    string msgs;
+  };
+  
+  interface Agent {
+    
+    exception NamingSpaceNotExist{};
+    exception NamingSpaceAlreadyExist{};
+    exception InvalidAccessData{};
+    exception CannotProceed{
+      string why;
+    };
+    
+    
+    // Creates a new naming space, and creates its data base
+    
+    CosNaming::NamingContext new_space(in NamingSpaceName space_name, 
+                                       in NamingSpaceAccessData data)
+      raises(NamingSpaceAlreadyExist,InvalidAccessData,CannotProceed);
+		
+    // adds an existing naming space on an existing data base
+    // If the NamingContext reference included in the NamingSpace struct is null,
+    // also creates a new root NamingContext
+    
+    CosNaming::NamingContext add_space(in NamingSpace space)
+      raises(NamingSpaceAlreadyExist,InvalidAccessData,CannotProceed);
+
+    // Updates the NamingSpace data
+    void update_space(in NamingSpaceName space_name, in NamingSpaceAccessData data)
+      raises(NamingSpaceNotExist, InvalidAccessData, CannotProceed);
+    
+    //Gets the active NamingSpaces information data
+    NamingSpace get_space(in NamingSpaceName space_name)
+      raises(NamingSpaceNotExist);
+
+    //Gets the NamingSpace information data
+    NamingSpaceSeq get_spaces();
+    
+    //Gets the Service Status
+    ServiceStatus get_status();
+
+    // Sets the maximun thread number for the NamingSpace
+    void set_max_threads(in NamingSpaceName space_name, in unsigned long n)
+      raises(NamingSpaceNotExist, CannotProceed);
+      
+    CosNaming::NamingContext get_root_context(in NamingSpaceName space_name)
+      raises(NamingSpaceNotExist);
+
+    // destroy the naming space and destroy the data base table
+    void delete_space(in NamingSpaceName space_name)
+      raises(NamingSpaceNotExist,CannotProceed);
+    
+    // removes the naming space from the server, but does not destroy the data base table        
+    void remove_space(in NamingSpaceName space_name)
+      raises(NamingSpaceNotExist,CannotProceed);
+        
+    // init service
+    void init_service() raises(CannotProceed);
+    
+   // void init_space_service(in NamingSpaceName space_name) raises(CannotProceed);
+   
+    // close
+    void shutdown_service() raises (CannotProceed);
+    
+   // void shutdown_space_service(in NamingSpaceName space_name) raises (CannotProceed);
+
+  };
+};

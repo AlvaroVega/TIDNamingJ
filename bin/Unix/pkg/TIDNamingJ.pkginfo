@@ -1,0 +1,11 @@
+PKG="TIDNameJ"
+NAME="e-Force: TIDNaming"
+VERSION="1.0.0"
+BASEDIR="/opt/TIDNamingJ_1.0.0"
+TARGET="Solaris 2.7"
+VENDOR="Telefónica Investigación y Desarrollo, S.A. Unipersonal"
+DESC="Proyecto e-Force"
+EMAIL="caceres@tid.es, pvargas@tid.es"
+ARCH="sparc"
+CLASSES=none
+CATEGORY=application

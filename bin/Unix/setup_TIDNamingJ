@@ -1,0 +1,42 @@
+PKGNAME=TIDNameJ
+
+SRV_DIR=`pkgparam $PKGNAME BASEDIR`
+SRV_BIN=$SRV_DIR/bin
+SRV_LIB=$SRV_DIR/lib
+SRV_TOOLS=$SRV_BIN/tools
+
+if [ -z "$JDK_HOME" ]; then
+	echo "Debe configurar la variable de entorno JDK_HOME"
+	echo
+elif [ -z "$ORACLE_HOME" ]; then
+	echo "Debe configurar Oracle"
+	echo
+else
+	# Variable de entorno del servicio
+	export TID_NAMINGJ_HOME=$SRV_DIR
+
+	# Configura el PATH para los procesos del servicio
+	if [ -z "$(echo $PATH | egrep "$SRV_BIN")" ]; then
+		PATH=${PATH+"$PATH:"}$SRV_BIN
+	fi
+
+	# Configura el PATH para las herramientas del servicio
+	if [ -z "$(echo $PATH | egrep "$SRV_TOOLS")" ]; then
+		PATH=${PATH+"$PATH:"}$SRV_TOOLS
+	fi
+
+	# Configura el CLASSPATH con las librerias del servicio
+	for LIB in $SRV_LIB/*.jar; do
+		if [ -z "$(echo $CLASSPATH | egrep "$LIB")" ]; then
+			CLASSPATH=${CLASSPATH+"$CLASSPATH:"}$LIB
+		fi
+	done
+
+	# Configura el CLASSPATH para JDBC
+	JDBC_HOME=$ORACLE_HOME/jdbc
+	if [ -z "$(echo $CLASSPATH | egrep "$JDBC_HOME")" ]; then
+		CLASSPATH=${CLASSPATH+"$CLASSPATH:"}$JDBC_HOME/lib/classes12.zip
+	fi
+
+	export PATH CLASSPATH
+fi

@@ -1,0 +1,6 @@
+# Dependencias del paquete TIDNameJ:
+#	TIDorbJ
+#	TIDtoolsJ
+#
+P TIDorbJ	TIDorbJ: ORB de Java
+P TIDtoolsJ	e-Force: Utilidades
